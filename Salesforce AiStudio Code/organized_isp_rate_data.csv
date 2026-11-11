@@ -1,0 +1,101 @@
+Site ID,Address,ZIP,Product,Speed,Status,Match Category,Identified LMP,Recommended Rate,NRC,$/Mbps,Age (Mo),Action Note
+SITE-089,"7376 Sheridan St, Hollywood, FL, 33024",33024,Ethernet - Switched,20,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-028,6125 Lakeview Rd Charlotte NC 28269,28269,Ethernet - Switched,10,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-007,"2625 W MAIN ST, LEAGUE CITY, TX, 77573",77573,Ethernet - Switched,500,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-008,1211 E Main St League City TX 77573,77573,Ethernet - Switched,10,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-013,2791 DUNN RD ST LOUIS MO 63136-4628,63136,Ethernet - Switched,100,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-051,"3807 NW 16 ST, LAUDER HILL, FL, 33311",33311,Ethernet - Switched,20,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-003,"509 W BROADWAY AVE, MINNEAPOLIS, MN, 55411",55411,Ethernet - Switched,50,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-030,"1900 CUNNINGHAM DR, HAMPTON, VA, 23666",23666,Ethernet - Switched,100,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-032,4280 LAFAYETTE RD INDIANAPOLIS IN 46254,46254,Ethernet - Switched,1000,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-088,"219 DEMING WAY, SUMMERVILLE, SC, 29483",29483,Ethernet - Switched,50,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-050,"8001 West Florissant Ave, St Louis, MO, 63136",63136,Ethernet - Switched,20,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-026,2101 EXECUTIVE DR HAMPTON VA 23666,23666,Ethernet - Switched,1000,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-079,2908 N MAIN ST ANDERSON SC 29621-2760,29621,Ethernet - Switched,20,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-082,"658 N Highway 183, Leander, TX, 78641",78641,Ethernet - Switched,20,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-094,"2257 Carolina Forest Blvd, Carolina Forest, SC, 29579",29579,Ethernet - Switched,20,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-014,"544 W Grand Pkwy S, Katy, TX, 77494",77494,Ethernet - Switched,500,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-083,"20200 ASHBROOK PL, ASHBURN, VA, 20147",20147,Ethernet - Switched,20,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-047,"2565 Princeton Rd, Fairfield Township, OH, 45011",45011,Ethernet - Switched,20,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-076,"333 Business Pkwy, Greer, SC, 29651",29651,Ethernet - Switched,20,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-074,"68 NW 98th Ave, Pembroke Pines, FL, 33024",33024,Ethernet - Switched,20,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-015,"1320 9th St NE, West Fargo, ND, 58078",58078,Ethernet - Switched,1000,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-011,"2260 Cole Flyer Rd, Jacksonville, FL, 32218",32218,Ethernet - Switched,100,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-069,"2907 SUNRISE VALLEY PL, RALEIGH, NC, 27610",27610,Ethernet - Switched,20,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-016,"1727 Grand Avenue Pkwy, Pflugerville, TX, 78660",78660,Ethernet - Switched,100,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-097,3240 W 36th St Chicago IL 60632,60632,Ethernet - Switched,20,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-066,"11517 Broadway St, Pearland, TX, 77584",77584,Ethernet - Switched,20,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-084,"2260 INTERSTATE 35 S, NEW BRAUNFELS, TX, 78130",78130,Ethernet - Switched,20,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-041,"10611 Broadway St, Pearland, TX, 77584",77584,Ethernet - Switched,20,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-012,"301 SW ORALABOR RD, ANKENY, IA, 50023",50023,Ethernet - Switched,100,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-042,"44470 Chilum Pl., Ashburn, VA, 20147",20147,Ethernet - Switched,20,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-064,"1707 W Mercury Blvd, Hampton, VA, 23666",23666,Ethernet - Switched,20,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-100,5927 MCCHESNEY DR CHARLOTTE NC 28269,28269,Ethernet - Switched,20,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-009,"6244 Chambersburg Rd, Huber Heights, OH, 45424",45424,Ethernet - Switched,100,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-061,"4627 AMBER VALLEY PKWY S, FARGO, ND, 58104",58104,Ethernet - Switched,50,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-029,"5270 S State Highway 360, Grand Prairie, TX, 75052",75052,Ethernet - Switched,50,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-058,"18422 S Dixie Hwy, Cutler Bay, FL, 33157",33157,Ethernet - Switched,20,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-035,1510 W 1ST ST ANKENY IA 50023,50023,Ethernet - Switched,100,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-052,"7945 Hamilton Ave, Cincinnati, OH, 45231",45231,Ethernet - Switched,20,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-023,"16412 New Independence Pkwy, #130, Horizon West, FL, 34787",34787,Ethernet - Switched,100,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-022,"4751 Veterans Memorial Pkwy, St Peters, MO, 63376",63376,Ethernet - Switched,5,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-040,2000 44TH ST S FARGO ND 58103,58103,Ethernet - Switched,100,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-054,"207 GEORGE BISHOP PKWY, Myrtle Beach, SC, 29579",29579,Ethernet - Switched,20,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-024,"1009 SLATER RD, Suite 120, Durham, NC, 27703",27703,Ethernet - Switched,1000,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-044,"1500 HERITAGE RESERVE CT - WAKE FOREST, NC",27587,Ethernet - Switched,20,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-060,"1009 S Dillard St, Winter Garden, FL, 34787",34787,Ethernet - Switched,20,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-048,"5001 Nine Mile Road, Henrico, VA, 23223",23223,Ethernet - Switched,20,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-090,"307 W 2ND NORTH ST, SUMMERVILLE, SC, 29483",29483,Ethernet - Switched,50,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-021,"1880 7TH AVE S - FARGO, ND",58103,Ethernet - Switched,20,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-075,"11626 SHADOW CREEK PKY, PEARLAND, TX, 77584",77584,Ethernet - Switched,20,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-091,1807 W REPUBLIC RD SPRINGFIELD MO 65807,65807,Ethernet - Switched,20,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-018,"407 CANE ISLAND PKWY, Katy, TX, 77494",77494,Ethernet - Switched,500,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-065,"100 *Ethernet*- 3660 S Cox Rd, Springfield, MO, 65807",65807,Ethernet - Switched,20,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-086,"4837 FARM TO MARKET 1463, Katy, TX, 77494",77494,Ethernet - Switched,50,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-055,"22727 MORTON RANCH RD, STE 150 - KATY, TX",77449,Ethernet - Switched,20,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-039,405 GLENN DR STERLING VA 20164,20164,Ethernet - Switched,1000,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-067,"245 Ritters Lake Road, Greensboro, NC, 27406",27406,Ethernet - Switched,20,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-098,"17542 Rosbough Drive, Middleburg Heights, OH, 44130",44130,Ethernet - Switched,20,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-062,"1881 Joe Battle Blvd, El Paso, TX, 79936",79936,Ethernet - Switched,20,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-093,507 EAST BLVD RAPID CITY SD 57701,57701,Ethernet - Switched,20,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-002,"200 GEORGE BISHOP PKY, MYRTLE BEACH, SC, 29579",29579,Ethernet - Switched,50,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-046,"2101 E Main St, Richmond, VA, 23223",23223,Ethernet - Switched,20,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-059,"3523 WACCAMAW BLVD, Myrtle Beach, SC, 29579",29579,Ethernet - Switched,20,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-072,"5427 Highway 6 N, Houston, TX, 77084",77084,Ethernet - Switched,20,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-006,"1520 W Main St, League City, TX, 77573",77573,Ethernet - Switched,20,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-053,"2920 NW 21st Ave, Oakland Park, FL, 33311",33311,Ethernet - Switched,20,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-004,"8500 S 30th Street, Lincoln, NE, 68516",68516,Ethernet - Switched,100,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-057,"22323 Grand Corner Dr, Katy, TX, 77494",77494,Ethernet - Switched,50,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-073,"8238 PARKLANE RD, COLUMBIA, SC, 29223",29223,Ethernet - Switched,20,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-020,6900 Cliffdale Rd. Fayetteville NC 28314,28314,Ethernet - Switched,10,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-037,20017 BRIDGELAND CREEK PKWY CYPRESS TX 77433,77433,Ethernet - Switched,200,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-001,"16535 SOUTHWEST FWY, Sugar Land, TX, 77479",77479,Ethernet - Switched,20,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-017,"5275 Geneva Ave, Oakdale, MN, 58078",58078,Ethernet - Switched,50,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-096,"437 W Mill St, New Braunfels, TX, 78130",78130,Ethernet - Switched,20,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-092,"11036 Shadow Creek Pkwy, Pearland, TX, 77584",77584,Ethernet - Switched,20,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-036,1101 BROOKSIDE LN BISMARCK ND 58503,58503,Ethernet - Switched,10000,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-027,"21830 Uunet Dr., DC13, Ashburn, VA, 20147",20147,Ethernet - Switched,10000,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-033,2601 S LOUISE AVE SIOUX FALLS SD 57106,57106,Ethernet - Switched,10,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-077,"5269 S Kolmar Ave - Chicago, IL",60632,Ethernet - Switched,20,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-056,"5337 S 56th St, Lincoln, NE, 68516",68516,Ethernet - Switched,20,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-019,"5623 TWO NOTCH RD, COLUMBIA, SC, 29223",29223,Ethernet - Switched,20,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-038,241 FARMINGTON RD SUMMERVILLE SC 29483,29483,Ethernet - Switched,50,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-063,"7613 Narcoossee Rd., Ste 100, Orlando, FL, 32822",32822,Ethernet - Switched,20,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-031,3095 KINGSWOOD BLVD GRAND PRAIRIE TX 75052,75052,Ethernet - Switched,10,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-070,"3376 Princeton Rd, Fairfield Township, OH, 45011",45011,Ethernet - Switched,20,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-085,"619 PEDERSON RD - Katy, TX",77494,Ethernet - Switched,20,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-005,2428 HUBBELL AVE DES MOINES IA 50317-6416,50317,Ethernet - Switched,50,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-080,"1366 WOODS CHAPEL RD, Greer, SC, 29651",29651,Ethernet - Switched,20,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-049,"1002 43rd St S - Fargo, ND",58103,Ethernet - Switched,20,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-095,4409 S CONGRESS AVE AUSTIN TX 78745-1945,78745,Ethernet - Switched,20,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-025,3800 NW 16 St Lauder Hill FL 33311,33311,Ethernet - Switched,10,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-071,"5008 183A Toll Rd, Cedar Park, TX, 78613",78613,Ethernet - Switched,20,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-010,"6801 Northlake Mall DR., Suite 155, Charlotte, NC, 28216",28216,Ethernet - Switched,20,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-099,"3909 13th Ave S, Fargo, ND, 58103",58103,Ethernet - Switched,50,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-034,1300 N MAIN ST SUMMERVILLE SC 29483,29483,Ethernet - Switched,100,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-043,"2858 S Golden Ave - Springfield, MO",65807,Ethernet - Switched,20,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-045,"2617 S COLUMBIA RD, Grand Forks, ND, 58201",58201,Ethernet - Switched,20,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-087,3337 S National Ave Springfield MO 65807-7305,65807,Ethernet - Switched,20,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-068,"4008 W 41st St, Sioux Falls, SD, 57106",57106,Ethernet - Switched,20,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-078,"3037 Trawood Dr, El Paso, TX, 79936",79936,Ethernet - Switched,20,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.
+SITE-081,3707 HUBBELL AVE DES MOINES IA 50317-4345,50317,Ethernet - Switched,20,RED,No data,Unknown,Quote Req.,$0.00,—,N/A,Database empty. Broadcast RFQ to market carriers.

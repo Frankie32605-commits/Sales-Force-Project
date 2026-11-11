@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ISP Rate Analyzer</title>
+<!-- SheetJS library for reading .xlsx and .xls files -->
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<style>
+  :root{
+    --bg:#0f1420;--panel:#171e2e;--line:#26304a;--text:#e6eaf2;--muted:#8b96b0;
+    --accent:#4f8cff;--good:#2ecc8f;--warn:#f5a524;--bad:#ff5d6c;--info:#38bdf8;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--text);display:grid;grid-template-columns:220px 1fr;min-height:100vh}
+  aside{background:var(--panel);border-right:1px solid var(--line);padding:20px}
+  aside h1{font-size:18px;margin:0 0 24px}
+  aside a{display:block;color:var(--muted);text-decoration:none;padding:9px 12px;border-radius:8px;margin-bottom:4px;cursor:pointer;transition:.15s}
+  aside a.active,aside a:hover{background:#22304d;color:var(--text)}
+  main{padding:24px 32px;overflow:auto}
+  header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+  header h2{margin:0;font-size:22px}
+  .btn{background:var(--accent);color:#fff;border:0;padding:9px 16px;border-radius:8px;cursor:pointer;font-weight:600;display:inline-flex;align-items:center;gap:6px;transition:.15s}
+  .btn:hover{filter:brightness(1.1)}
+  .btn.ghost{background:transparent;border:1px solid var(--line);color:var(--text)}
+  .btn.ghost:hover{background:#22304d}
+  .btn.sm{padding:5px 10px;font-size:12px;border-radius:6px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px;margin-bottom:18px}
+  .card h3{margin:0 0 12px;font-size:15px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+  .drop{border:2px dashed var(--line);border-radius:12px;padding:36px;text-align:center;color:var(--muted);cursor:pointer;transition:.2s;position:relative}
+  .drop:hover,.drop.over{border-color:var(--accent);background:#1b2540}
+  .drop input[type=file]{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer}
+  
+  /* KPI & Clickable Cards */
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px}
+  .kpi{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;cursor:pointer;transition:.2s;user-select:none;position:relative}
+  .kpi:hover{transform:translateY(-2px);box-shadow:0 6px 14px rgba(0,0,0,0.3)}
+  .kpi.interactive{cursor:pointer}
+  .kpi.active{outline:2px solid currentColor;box-shadow:0 0 16px currentColor}
+  .kpi .v{font-size:26px;font-weight:700;margin-top:6px}
+  .kpi .l{color:var(--muted);font-size:13px;display:flex;justify-content:space-between;align-items:center}
+  .kpi .active-pill{font-size:10px;padding:2px 6px;border-radius:10px;background:rgba(255,255,255,0.15);font-weight:700}
+  
+  .grid2{display:grid;grid-template-columns:2fr 1fr;gap:18px}
+  .tbl-wrap{overflow-x:auto}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th,td{padding:10px 12px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}
+  th{color:var(--muted);font-weight:600;cursor:pointer;user-select:none}
+  tr.clickable-row{cursor:pointer;transition:.15s}
+  tr.clickable-row:hover td{background:#1e2942}
+  
+  /* Status & Reason Tags */
+  .tag{padding:3px 8px;border-radius:20px;font-size:12px;font-weight:600;display:inline-block}
+  .up{background:#3a1d24;color:var(--bad)}
+  .down{background:#143326;color:var(--good)}
+  .flat{background:#352b14;color:var(--warn)}
+  .info-tag{background:#142d3d;color:var(--info)}
+
+  .chip{display:inline-flex;align-items:center;padding:2px 8px;border-radius:6px;font-size:11px;font-weight:600;gap:4px}
+  .chip-green{background:#153424;color:#4ade80;border:1px solid #166534}
+  .chip-orange{background:#382711;color:#fbbf24;border:1px solid #854d0e}
+  .chip-red{background:#3a1a1f;color:#f87171;border:1px solid #991b1b}
+  .chip-info{background:#162a3b;color:#38bdf8;border:1px solid #075985}
+  
+  .filters{display:flex;gap:10px;margin-bottom:12px;flex-wrap:wrap;align-items:center}
+  select,input{background:#0f1420;color:var(--text);border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:13px}
+  select:focus,input:focus{outline:none;border-color:var(--accent)}
+  canvas{width:100%;height:260px}
+  .rec{border-left:4px solid var(--good);padding:10px 14px;margin-bottom:10px;background:#131a29;border-radius:6px}
+  .rec b{font-size:20px}
+  .muted{color:var(--muted);font-size:13px}
+  .hidden{display:none !important}
+  .pill{background:#22304d;color:var(--text);border-radius:20px;padding:4px 12px;font-size:12px;font-weight:600;cursor:pointer}
+  
+  /* Inspection Drawer / Modal */
+  .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(3px);display:flex;justify-content:center;align-items:center;z-index:9999;padding:20px}
+  .modal-box{background:var(--panel);border:1px solid var(--line);border-radius:14px;max-width:760px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 20px 40px rgba(0,0,0,0.6);padding:24px}
+  .modal-header{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line);padding-bottom:14px;margin-bottom:18px}
+  .modal-header h3{margin:0;font-size:18px}
+  .modal-close{background:transparent;border:0;color:var(--muted);font-size:22px;cursor:pointer;padding:0 6px}
+  .modal-close:hover{color:var(--text)}
+  .compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px}
+  .compare-card{background:#111624;border:1px solid var(--line);border-radius:10px;padding:14px}
+  .compare-card h4{margin:0 0 10px;font-size:13px;color:var(--muted);text-transform:uppercase}
+  .compare-row{display:flex;justify-content:space-between;font-size:13px;padding:5px 0;border-bottom:1px dashed #202a42}
+  .compare-row:last-child{border-bottom:0}
+  .compare-label{color:var(--muted)}
+</style>
+</head>
+<body>
+<aside>
+  <h1>📶 ISP Rate Analyzer</h1>
+  <a class="active" data-view="import">1. Import &amp; Triage</a>
+  <a data-view="data">2. Organized Data</a>
+  <a data-view="rates">3. Recommended Rates</a>
+  <a data-view="settings">Settings</a>
+</aside>
+
+<main>
+  <!-- IMPORT & TRIAGE -->
+  <section id="import">
+    <header>
+      <h2>Data Import &amp; Triage Engine</h2>
+      <button class="btn ghost" id="sampleBtn">Load sample historical quotes</button>
+    </header>
+    
+    <div class="card">
+      <h3>Step 1: Historical Quotes Database</h3>
+      <div class="drop" id="drop">
+        <p style="font-size:32px;margin:0 0 6px">⬆</p>
+        <p><b>Drop Historical Quotes or Combined Workbook (.xlsx, .csv)</b> or click to browse</p>
+        <p class="muted">Quotes older than 12 months are fully retained as historical pricing and budgetary benchmarks.</p>
+        <input type="file" id="file" multiple accept=".csv,.json,.xlsx,.xls">
+      </div>
+    </div>
+    
+    <div class="card"><h3>Import log</h3><div id="log" class="muted">No files imported yet.</div></div>
+
+    <div class="card" id="rfpCard">
+      <h3>Step 2: RFP Site Request Triage</h3>
+      <p class="muted">Upload your RFP site list (e.g. <code>PACEU - IndaForce Project.xlsx</code>). The engine will match requested sites against historical data and area LMP intelligence.</p>
+      <div class="drop" id="rfpDrop" style="padding:22px">
+        <p><b>Drop RFP Request File here (.xlsx, .xls, .csv, .json)</b> or click to browse</p>
+        <p class="muted">Columns: Site ID, Address, ZIP Code, Product (DIA / EVPL), Speed (Mbps)</p>
+        <input type="file" id="rfpFile" accept=".csv,.json,.xlsx,.xls">
+      </div>
+      <div id="rfpPreview" style="margin-top:14px"></div>
+    </div>
+  </section>
+
+  <!-- DATA -->
+  <section id="data" class="hidden">
+    <header><h2>Organized Data</h2><button class="btn ghost" id="exportBtn">Export CSV</button></header>
+    <div class="kpis" id="kpis"></div>
+    <div class="card">
+      <div class="filters">
+        <select id="fProvider"><option value="">All providers</option></select>
+        <select id="fRegion"><option value="">All regions</option></select>
+        <input id="fSearch" placeholder="Search plan…">
+      </div>
+      <div class="tbl-wrap">
+      <table><thead><tr>
+        <th data-k="date">Date</th><th data-k="provider">Provider</th><th data-k="plan">Plan</th>
+        <th data-k="speed_mbps">Speed (Mbps)</th><th data-k="price">Price</th><th data-k="ppm">$/Mbps</th><th data-k="region">Region</th>
+      </tr></thead><tbody id="tbody"></tbody></table>
+      </div>
+    </div>
+  </section>
+
+  <!-- RATES -->
+  <section id="rates" class="hidden">
+    <header><h2>Recommended Rates</h2>
+      <select id="rProvider"></select></header>
+    <div class="grid2">
+      <div class="card"><h3>Price history</h3><canvas id="chart" width="800" height="260"></canvas></div>
+      <div class="card"><h3>Recommendation</h3><div id="recBox"></div></div>
+    </div>
+    <div class="card"><h3>All providers</h3>
+      <div class="tbl-wrap">
+      <table><thead><tr><th>Provider</th><th>Avg price</th><th>12-mo trend</th><th>Low</th><th>High</th><th>Recommended rate</th><th>Confidence</th></tr></thead>
+      <tbody id="recTable"></tbody></table>
+      </div>
+    </div>
+  </section>
+
+  <!-- SETTINGS -->
+  <section id="settings" class="hidden">
+    <header><h2>Settings</h2></header>
+    <div class="card">
+      <h3>Triage Classification Rules</h3>
+      <p><span class="tag down">GREEN</span> <b>Reusable:</b> Address match, identical product family (DIA vs. EVPL), matching bandwidth, and quoted within the reusable window.</p>
+      <p><span class="tag flat">ORANGE</span> <b>Review:</b> Matched location, but requires attention due to stale quote age (13–24 mo), speed tier difference, product mismatch, or address variation.</p>
+      <p><span class="tag up">RED</span> <b>Re-quote / Budgetary:</b> No direct usable quote — net-new site or historical record exceeds the 24-month archival limit (retained as a budgetary baseline).</p>
+    </div>
+    <div class="card">
+      <h3>Thresholds</h3>
+      <p><label>Reusable max age (months) <input type="number" id="sFresh" value="12" min="1" max="60"></label></p>
+      <p><label>Archival max age (months) <input type="number" id="sArch" value="24" min="1" max="120"></label></p>
+      <p><label>Address variation sensitivity <input type="number" id="sSens" value="0.72" min="0.50" max="0.99" step="0.01"></label></p>
+      <p class="muted">Older quotes are preserved to inform area budgetary benchmarks and LMP discovery.</p>
+    </div>
+  </section>
+</main>
+
+<!-- Historical Comparison & Inspection Modal -->
+<div id="compareModal" class="modal-overlay hidden">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3 id="mTitle">Historical Pricing &amp; Review Inspection</h3>
+      <button class="modal-close" id="mClose">&times;</button>
+    </div>
+    <div id="mBody"></div>
+  </div>
+</div>
+
+<script>
+let rows = [], rfpRows = [], triage = [], sortKey = 'date', sortDir = -1;
+let statusFilter = null;
+let reasonFilter = '';
+let triageSort = { key: 'Site ID', dir: 1 };
+const $ = id => document.getElementById(id);
+const money = n => '$' + Number(n).toFixed(2);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+// Navigation
+document.querySelectorAll('aside a').forEach(a => a.onclick = () => {
+  document.querySelectorAll('aside a').forEach(x => x.classList.remove('active'));
+  a.classList.add('active');
+  document.querySelectorAll('main section').forEach(s => s.classList.add('hidden'));
+  $(a.dataset.view).classList.remove('hidden');
+  if (a.dataset.view === 'rates') renderRates();
+  if (a.dataset.view === 'data') renderTable();
+});
+const go = v => document.querySelector(`aside a[data-view="${v}"]`).click();
+
+// Setup drop zones
+const drop = $('drop'), fileInput = $('file');
+drop.onclick = e => { if (e.target !== fileInput) fileInput.click(); };
+['dragover','drop'].forEach(evt => window.addEventListener(evt, e => e.preventDefault(), false));
+drop.ondragover  = e => { e.preventDefault(); drop.classList.add('over'); };
+drop.ondragleave = () => drop.classList.remove('over');
+drop.ondrop = e => { e.preventDefault(); drop.classList.remove('over'); handleFiles(e.dataTransfer.files); };
+fileInput.onchange = e => handleFiles(e.target.files);
+
+const rfpDrop = $('rfpDrop'), rfpInput = $('rfpFile');
+rfpDrop.onclick = e => { if (e.target !== rfpInput) rfpInput.click(); };
+rfpDrop.ondragover = e => { e.preventDefault(); rfpDrop.classList.add('over'); };
+rfpDrop.ondragleave = () => rfpDrop.classList.remove('over');
+rfpDrop.ondrop = e => { e.preventDefault(); rfpDrop.classList.remove('over'); handleRfpFiles(e.dataTransfer.files); };
+rfpInput.onchange = e => handleRfpFiles(e.target.files);
+
+// Aliases (excluding instructor_key from provider)
+const ALIASES = {
+  provider:  ['provider','isp','company','carrier','vendor','lmp','member_provider'],
+  plan:      ['plan','package','tier','product','name','iqr_product','product_name'],
+  speed_mbps:['speed_mbps','speed','mbps','download','bandwidth','bw'],
+  price:     ['price','rate','cost','monthly','amount','monthly_price','mrc','mrc_monthly','recurring'],
+  date:      ['date','month','period','timestamp','effective_date','created_date','site_price_created_date','quote_date'],
+  region:    ['region','state','market','area','zip','zip_code','zipcode'],
+  address:   ['address','loc_z','location','site_address','street','raw_address'],
+  zip_code:  ['zip_code','zip','zipcode','postal','zip_code_loc_z'],
+  site_id:   ['site_id','siteid','id','site']
+};
+
+const normKey = k => String(k).toLowerCase().trim().replace(/[^a-z0-9]/g, '_').replace(/_+/g, '_').replace(/^_|_$/g, '');
+
+function parseDate(v){
+  if (v === null || v === undefined || v === '') return '';
+  if (v instanceof Date && !isNaN(v)) return v.toISOString().slice(0,10);
+  const s = String(v).trim();
+  if (/^\d{5}(\.\d+)?$/.test(s)) {
+    const ms = (parseFloat(s) - 25569) * 86400 * 1000;
+    const d = new Date(ms);
+    return isNaN(d) ? '' : d.toISOString().slice(0,10);
+  }
+  if (/^\d{4}-\d{2}-\d{2}/.test(s)) return s.slice(0,10);
+  const us = s.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{2,4})$/);
+  if (us) {
+    let [, m, d, y] = us;
+    y = y.length === 2 ? '20' + y : y;
+    const dt = new Date(`${y}-${m.padStart(2,'0')}-${d.padStart(2,'0')}T00:00:00Z`);
+    return isNaN(dt) ? '' : dt.toISOString().slice(0,10);
+  }
+  const dt = new Date(s);
+  return isNaN(dt) ? '' : dt.toISOString().slice(0,10);
+}
+
+function parseNum(v){
+  if (typeof v === 'number') return isFinite(v) ? v : 0;
+  const n = parseFloat(String(v ?? '').replace(/[^0-9.\-]/g, ''));
+  return isFinite(n) ? n : 0;
+}
+
+const STREET_ABBR = [
+  [/\broad\b/g,'rd'],[/\bstreet\b/g,'st'],[/\bavenue\b/g,'ave'],[/\bboulevard\b/g,'blvd'],
+  [/\bparkway\b/g,'pkwy'],[/\bdrive\b/g,'dr'],[/\blane\b/g,'ln'],[/\bcourt\b/g,'ct'],
+  [/\bcircle\b/g,'cir'],[/\bhighway\b/g,'hwy'],[/\bsuite\b/g,'ste'],[/\bnorth\b/g,'n'],
+  [/\bsouth\b/g,'s'],[/\beast\b/g,'e'],[/\bwest\b/g,'w']
+];
+
+function cleanAddress(addr){
+  if (!addr) return '';
+  let a = String(addr).replace(/^\*.*?\*\s*-\s*/, '').toLowerCase().trim();
+  a = a.replace(/[,.#\-\/]/g, ' ').replace(/\s+/g, ' ').trim();
+  STREET_ABBR.forEach(([re, rep]) => { a = a.replace(re, rep); });
+  return a;
+}
+
+function streetNumber(addr){
+  const m = cleanAddress(addr).match(/^(\d+)/);
+  return m ? m[1] : '';
+}
+
+// Clear distinction between DIA and EVPL (Ethernet)
+function productFamily(p){
+  const v = String(p || '').toUpperCase();
+  if (/(DIA|DEDICATED INTERNET|^INTERNET)/.test(v)) return 'DIA';
+  if (/(ETHERNET|EVPL|SWITCHED|E-LINE|EPL|WAN)/.test(v)) return 'EVPL';
+  if (/WAVE/.test(v)) return 'WAVELENGTH';
+  if (/BROADBAND|COAX/.test(v)) return 'BROADBAND';
+  return v || 'UNKNOWN';
+}
+
+function similarity(a, b){
+  if (!a || !b) return 0;
+  if (a === b) return 1;
+  const bigrams = s => { const m = new Map(); for (let i=0;i<s.length-1;i++){ const g=s.slice(i,i+2); m.set(g,(m.get(g)||0)+1); } return m; };
+  const A = bigrams(a), B = bigrams(b);
+  let hits = 0, total = 0;
+  A.forEach((n,g) => { total += n; hits += Math.min(n, B.get(g) || 0); });
+  B.forEach(n => { total += n; });
+  return total ? (2 * hits) / total : 0;
+}
+
+function monthsBetween(dateStr, refStr){
+  if (!dateStr || !refStr) return 0;
+  const d = new Date(dateStr), r = new Date(refStr);
+  return Math.max(0, (r.getFullYear() - d.getFullYear()) * 12 + (r.getMonth() - d.getMonth()));
+}
+
+function normalize(obj){
+  const out = {};
+  const keys = Object.keys(obj);
+  for (const [field, aliases] of Object.entries(ALIASES)){
+    const match = keys.find(k => aliases.includes(normKey(k)));
+    out[field] = match ? obj[match] : '';
+  }
+  out.price      = parseNum(out.price);
+  out.speed_mbps = parseNum(out.speed_mbps);
+  out.date       = parseDate(out.date);
+
+  if (!out.date && out.price > 0) {
+    out.date = new Date().toISOString().slice(0, 10);
+  }
+
+  out.provider   = String(out.provider || 'Unknown').trim() || 'Unknown';
+  out.plan       = String(out.plan || '—').trim() || '—';
+  out.region     = String(out.region || '—').trim() || '—';
+  out.address    = String(out.address || '').trim();
+  out.zip_code   = String(out.zip_code || out.region || '').replace(/\D/g,'').slice(0,5);
+  out.ppm        = out.speed_mbps ? out.price / out.speed_mbps : 0;
+  out.family     = productFamily(out.plan);
+  out.addr_norm  = cleanAddress(out.address);
+  out.street_num = streetNumber(out.address);
+  return out;
+}
+
+function parseCSV(text){
+  const out = [];
+  let header = null;
+  const lines = text.replace(/\r\n/g,'\n').split('\n');
+  for (const line of lines){
+    if (!line.trim()) continue;
+    const cells = [];
+    let f = '', q = false;
+    for (let i=0;i<line.length;i++){
+      const ch = line[i];
+      if (q){
+        if (ch === '"' && line[i+1] === '"'){ f += '"'; i++; }
+        else if (ch === '"'){ q = false; }
+        else f += ch;
+      } else {
+        if (ch === '"') q = true;
+        else if (ch === ','){ cells.push(f); f=''; }
+        else f += ch;
+      }
+    }
+    cells.push(f);
+    if (!header){ header = cells.map(h => h.trim()); continue; }
+    const row = {};
+    header.forEach((h,i) => row[h] = cells[i]);
+    out.push(row);
+  }
+  return out;
+}
+
+function readFile(f){
+  return new Promise((resolve, reject) => {
+    const ext = f.name.toLowerCase().slice(f.name.lastIndexOf('.'));
+    if (ext === '.xlsx' || ext === '.xls') {
+      const r = new FileReader();
+      r.onerror = () => reject(new Error('Could not read Excel file'));
+      r.onload = e => {
+        try {
+          if (typeof XLSX === 'undefined') throw new Error('SheetJS library failed to load.');
+          const data = new Uint8Array(e.target.result);
+          const workbook = XLSX.read(data, { type:'array', cellDates:true });
+          const sheets = workbook.SheetNames.map(name => ({
+            name,
+            rows: XLSX.utils.sheet_to_json(workbook.Sheets[name], { defval:'' })
+          }));
+          resolve({ isExcel:true, sheets });
+        } catch(err){ reject(err); }
+      };
+      r.readAsArrayBuffer(f);
+      return;
+    }
+    const r = new FileReader();
+    r.onerror = () => reject(new Error('Could not read file'));
+    r.onload = () => {
+      try {
+        if (ext === '.json'){
+          const j = JSON.parse(r.result);
+          const raw = Array.isArray(j) ? j : (j.data || j.rows || []);
+          resolve({ isExcel:false, sheets:[{ name:f.name, rows:raw }] });
+        } else {
+          resolve({ isExcel:false, sheets:[{ name:f.name, rows:parseCSV(r.result) }] });
+        }
+      } catch(e){ reject(e); }
+    };
+    r.readAsText(f);
+  });
+}
+
+function renderRfpPreview(fileName){
+  const preview = rfpRows.slice(0, 5);
+  $('rfpPreview').innerHTML =
+    `<p class="muted"><b>${rfpRows.length}</b> total RFP site requests loaded.</p>` +
+    `<div class="tbl-wrap"><table><thead><tr><th>Site ID</th><th>Address</th><th>ZIP</th><th>Product</th><th>Speed</th></tr></thead><tbody>` +
+    preview.map(r => `<tr><td>${esc(r.site_id || '')}</td><td>${esc(r.address)}</td><td>${esc(r.zip_code)}</td><td>${esc(r.plan)}</td><td>${esc(r.speed_mbps)}</td></tr>`).join('') +
+    `</tbody></table></div>` +
+    `<p style="margin-top:14px"><button class="btn" id="runTriage">⚡ Run Rate Analysis &amp; Triage</button></p>`;
+  $('runTriage').onclick = runTriage;
+}
+
+function handleFiles(files){
+  if (!files || !files.length) return;
+  [...files].forEach(f => {
+    readFile(f).then(result => {
+      let fileHistCount = 0;
+      let fileRfpCount = 0;
+
+      result.sheets.forEach(sheet => {
+        if (!sheet.rows || !sheet.rows.length) return;
+        const clean = sheet.rows.map(normalize);
+        const histValid = clean.filter(x => x.price > 0);
+        const rfpValid = clean.filter(x => (x.site_id || x.address) && !(x.price > 0));
+
+        if (histValid.length > 0) {
+          rows.push(...histValid);
+          fileHistCount += histValid.length;
+          log(`✅ Sheet "<b>${sheet.name}</b>": ${histValid.length} historical quotes loaded into database`);
+        }
+        if (rfpValid.length > 0) {
+          rfpRows.push(...rfpValid);
+          fileRfpCount += rfpValid.length;
+          log(`📋 Sheet "<b>${sheet.name}</b>": ${rfpValid.length} RFP site requests loaded into Step 2`);
+        }
+      });
+
+      if (fileRfpCount > 0) renderRfpPreview(f.name);
+      if (fileHistCount > 0) refresh();
+      if (fileHistCount === 0 && fileRfpCount === 0) log(`⚠️ ${f.name}: No recognized quote rows found.`);
+    }).catch(e => log(`❌ ${f.name}: ${e.message}`));
+  });
+}
+
+function handleRfpFiles(files){
+  if (!files || !files.length) return;
+  const f = files[0];
+  readFile(f).then(result => {
+    let count = 0;
+    result.sheets.forEach(sheet => {
+      if (!sheet.rows || !sheet.rows.length) return;
+      const clean = sheet.rows.map(normalize);
+      const reqs = clean.filter(x => (x.site_id || x.address));
+      rfpRows.push(...reqs);
+      count += reqs.length;
+    });
+    renderRfpPreview(f.name);
+    log(`✅ ${f.name}: ${count} site request rows loaded into RFP triage`);
+  }).catch(e => log(`❌ ${f.name}: ${e.message}`));
+}
+
+function log(m){
+  const l = $('log');
+  if (l.textContent.startsWith('No files')) l.innerHTML = '';
+  l.innerHTML += `<div>${m}</div>`;
+}
+
+// Sample historical quotes
+$('sampleBtn').onclick = () => {
+  const provs = {Comcast:[70,'Northeast'],Spectrum:[65,'Midwest'],'AT&T Fiber':[60,'South'],Verizon:[75,'Northeast'],Frontier:[55,'West']};
+  const out = [];
+  for (const [p,[base,reg]] of Object.entries(provs))
+    for (let m=0;m<24;m++){
+      const d = new Date(2024+Math.floor(m/12), m%12, 1);
+      out.push(normalize({provider:p,plan:'Ethernet - Switched',speed:500,price:(base + m*(Math.random()*.6-.1) + Math.random()*4).toFixed(2),date:d,region:reg,address:`${100+m} Main St`,zip_code:'77573'}));
+    }
+  rows.push(...out);
+  log(`✅ Sample historical data loaded: ${out.length} records`);
+  refresh();
+};
+
+// ==========================================
+// REFINED TRIAGE MATCHING ENGINE & REASONS
+// ==========================================
+function readSettings(){
+  return {
+    fresh: +$('sFresh').value || 12,
+    arch:  +$('sArch').value || 24,
+    sens:  +$('sSens').value || 0.72
+  };
+}
+
+function classify(req, db, refDate){
+  const s = readSettings();
+  if (!db.length) {
+    return {
+      status: 'RED',
+      category: 'No Data',
+      reviewCode: 'no_history',
+      chip: 'No DB',
+      why: 'Historical database is empty.',
+      match: null,
+      areaLmps: [],
+      budgetRate: 'Quote Req.'
+    };
+  }
+
+  const zip = req.zip_code;
+  const reqFam = req.family;
+
+  // 1. Geographic Area Intelligence (Preserving historical baseline)
+  const zipPool = db.filter(r => zip && r.zip_code === zip);
+  const areaLmps = [...new Set(zipPool.map(r => r.provider).filter(p => p && p !== 'Unknown'))];
+  const zipPpms = zipPool.map(r => r.ppm).filter(p => p > 0);
+  const avgAreaPpm = zipPpms.length ? (zipPpms.reduce((a, b) => a + b, 0) / zipPpms.length) : 0;
+  const areaBudgetMRC = (avgAreaPpm > 0 && req.speed_mbps > 0) ? (avgAreaPpm * req.speed_mbps) : 0;
+
+  // 2. Address & Product Matching within ZIP or full database
+  let pool = zipPool.length ? zipPool : db;
+  let best = null, bestSim = 0, kind = 'None';
+
+  for (const r of pool){
+    const exact = (req.addr_norm && req.addr_norm === r.addr_norm) ||
+                  (req.street_num && req.street_num === r.street_num &&
+                   r.addr_norm.includes(req.street_num) && req.addr_norm.includes(r.addr_norm));
+    if (exact){
+      best = r; bestSim = 1.0; kind = 'Exact';
+      if (r.family === reqFam) break; // Perfect address & product
+    } else if (req.street_num && r.street_num && req.street_num === r.street_num){
+      const sim = similarity(req.addr_norm, r.addr_norm);
+      if (sim >= s.sens && sim > bestSim){
+        bestSim = sim; best = r; kind = 'Variation';
+      }
+    }
+  }
+
+  // 3. Classification Decision Logic
+  if (!best || bestSim < s.sens){
+    // NET-NEW SITE (Preserving Area LMP & Budgetary Pricing)
+    if (areaLmps.length > 0){
+      return {
+        status: 'RED',
+        category: 'Net-new site (Area LMPs known)',
+        reviewCode: 'net_new_area',
+        chip: 'Net-New (Area LMPs)',
+        why: `No historical address quote. Area intelligence shows ${areaLmps.length} active LMP(s) in ZIP ${zip} (${areaLmps.slice(0,3).join(', ')}). Area avg: ${money(avgAreaPpm)}/Mbps.`,
+        match: null,
+        areaLmps,
+        budgetRate: areaBudgetMRC > 0 ? `Est. ${money(areaBudgetMRC)} (Budgetary)` : 'Quote Req.',
+        age: 'N/A',
+        bestSim: 0
+      };
+    }
+    return {
+      status: 'RED',
+      category: 'Net-new site (No area history)',
+      reviewCode: 'net_new_unserved',
+      chip: 'Net-New (No History)',
+      why: `Zero historical quote records found in ZIP ${zip}. Full carrier RFP required.`,
+      match: null,
+      areaLmps: [],
+      budgetRate: 'Quote Req.',
+      age: 'N/A',
+      bestSim: 0
+    };
+  }
+
+  const age = monthsBetween(best.date, refDate);
+  const sameFam = best.family === reqFam;
+  const sameSpeed = best.speed_mbps && req.speed_mbps && best.speed_mbps === req.speed_mbps;
+
+  // PRODUCT MISMATCH (e.g. Requested DIA, but historical quote was EVPL)
+  if (!sameFam){
+    return {
+      status: 'ORANGE',
+      category: 'Product mismatch',
+      reviewCode: 'product_mismatch',
+      chip: `Product (${best.family} vs ${reqFam})`,
+      why: `Address on-net with ${best.provider}, but historically quoted for ${best.family} ($${best.price.toFixed(2)}) instead of requested ${reqFam}. Request re-rate for ${reqFam}.`,
+      match: best,
+      areaLmps,
+      budgetRate: `Review (${best.family} $${best.price.toFixed(0)})`,
+      age,
+      bestSim
+    };
+  }
+
+  // ADDRESS VARIATION
+  if (kind === 'Variation'){
+    return {
+      status: 'ORANGE',
+      category: 'Address variation',
+      reviewCode: 'addr_variation',
+      chip: `Addr Variation (${(bestSim*100).toFixed(0)}%)`,
+      why: `Closest matched historical quote: "${best.address}" (${(bestSim*100).toFixed(0)}% match). Confirm building/suite parity before reusing rate.`,
+      match: best,
+      areaLmps,
+      budgetRate: money(best.price),
+      age,
+      bestSim
+    };
+  }
+
+  // EXACT ADDRESS MATCH
+  if (kind === 'Exact'){
+    // SPEED MISMATCH
+    if (!sameSpeed){
+      return {
+        status: 'ORANGE',
+        category: 'Speed tier mismatch',
+        reviewCode: 'speed_mismatch',
+        chip: `Speed (${best.speed_mbps}M vs ${req.speed_mbps}M)`,
+        why: `Carrier on-net (${best.provider}), but history was ${best.speed_mbps} Mbps vs ${req.speed_mbps} Mbps requested.`,
+        match: best,
+        areaLmps,
+        budgetRate: `${money(best.price)} (${best.speed_mbps}M ref)`,
+        age,
+        bestSim
+      };
+    }
+
+    // FRESH: Reusable Pricing (≤ 12 months)
+    if (age <= s.fresh){
+      return {
+        status: 'GREEN',
+        category: 'Exact match / Fresh pricing',
+        reviewCode: 'reusable_fresh',
+        chip: `Fresh Quote (${age} mo)`,
+        why: `Exact address, identical product (${reqFam}), and speed (${req.speed_mbps}M) quoted ${age} mo ago by ${best.provider} (within ${s.fresh}-mo reusable window).`,
+        match: best,
+        areaLmps,
+        budgetRate: money(best.price),
+        age,
+        bestSim
+      };
+    }
+
+    // STALE: Review Pricing (13 to 24 months)
+    if (age <= s.arch){
+      return {
+        status: 'ORANGE',
+        category: 'Exact match / Stale pricing',
+        reviewCode: 'stale_pricing',
+        chip: `Stale (${age} mo old)`,
+        why: `Exact location matched (${best.provider}), but pricing is ${age} months old (reusable policy requires ≤${s.fresh} mo). Review for rate adjustment.`,
+        match: best,
+        areaLmps,
+        budgetRate: `${money(best.price)} (Stale)`,
+        age,
+        bestSim
+      };
+    }
+
+    // ARCHIVED: Preserved for Budgetary Baseline (> 24 months)
+    return {
+      status: 'RED',
+      category: 'Exact address / Archived quote',
+      reviewCode: 'archived_pricing',
+      chip: `Archived (${age} mo old)`,
+      why: `Address matches ${best.provider}, but quote is ${age} months old (past ${s.arch}-mo limit). Retained as historical budgetary baseline.`,
+      match: best,
+      areaLmps,
+      budgetRate: `${money(best.price)} (Budgetary)`,
+      age,
+      bestSim
+    };
+  }
+}
+
+function runTriage(){
+  if (!rows.length){ 
+    alert('Please load historical quotes first (or click "Load sample historical quotes").'); 
+    return; 
+  }
+  if (!rfpRows.length){ 
+    alert('Please load an RFP file first.'); 
+    return; 
+  }
+
+  const validDates = rows.map(r => r.date).filter(Boolean).sort();
+  const refDate = validDates.at(-1) || new Date().toISOString().slice(0,10);
+
+  triage = rfpRows.map((r, i) => {
+    const res = classify(r, rows, refDate);
+    const m = res.match;
+    return {
+      'Site ID': r.site_id || `SITE-${String(i+1).padStart(3,'0')}`,
+      'Address': r.address,
+      'ZIP': r.zip_code,
+      'Product': r.plan,
+      'Family': r.family,
+      'Speed': r.speed_mbps,
+      'Status': res.status,
+      'Match Category': res.category,
+      'Review Code': res.reviewCode,
+      'Chip': res.chip,
+      'Why': res.why,
+      'Identified LMP': m ? m.provider : (res.areaLmps.length ? res.areaLmps.slice(0,2).join(', ') : 'Unknown'),
+      'Recommended Rate': res.budgetRate,
+      'Raw Rate': m ? m.price : 0,
+      'Age (Mo)': res.age !== undefined ? res.age : 'N/A',
+      'Area LMPs': res.areaLmps,
+      'MatchObj': m,
+      'Sim': res.bestSim
+    };
+  });
+
+  statusFilter = null;
+  reasonFilter = '';
+  renderTriage();
+}
+
+function renderTriage(){
+  const host = $('rfpPreview');
+  if (!triage.length){ host.innerHTML = '<p class="muted">No triage results yet.</p>'; return; }
+
+  const total   = triage.length;
+  const greens  = triage.filter(r => r.Status === 'GREEN').length;
+  const oranges = triage.filter(r => r.Status === 'ORANGE').length;
+  const reds    = triage.filter(r => r.Status === 'RED').length;
+  const pct = n => total ? Math.round(n/total*100) : 0;
+
+  // Interactive KPI card generator
+  const card = (label, value, color, key, pctText) => {
+    const active = statusFilter === key;
+    return `<div class="kpi interactive ${active ? 'active' : ''}" data-status="${key}" style="border-color:${color};color:${color}">
+      <div class="l">
+        <span>${label}</span>
+        ${active ? '<span class="active-pill">ACTIVE FILTER</span>' : ''}
+      </div>
+      <div class="v">${value} <span class="muted" style="font-size:14px;color:var(--muted)">(${pctText})</span></div>
+    </div>`;
+  };
+
+  // Filter view by status and review reason
+  let view = triage;
+  if (statusFilter) view = view.filter(r => r.Status === statusFilter);
+  if (reasonFilter) view = view.filter(r => r['Review Code'] === reasonFilter);
+
+  // Sorting
+  view = [...view].sort((a,b) => {
+    const k = triageSort.key;
+    const av = a[k], bv = b[k];
+    return (av > bv ? 1 : av < bv ? -1 : 0) * triageSort.dir;
+  });
+
+  host.innerHTML = `
+    <p class="muted" style="margin-bottom:8px">⚡ <b>Interactive Filtering:</b> Click any summary box below to isolate Green, Orange, or Red sites. Click again to clear.</p>
+    <div class="kpis" style="grid-template-columns:repeat(4,1fr)">
+      <div class="kpi interactive ${statusFilter === null ? 'active' : ''}" data-status="" style="border-color:#8b96b0;color:var(--text)">
+        <div class="l"><span>Total Sites</span>${statusFilter === null ? '<span class="active-pill">ALL</span>' : ''}</div>
+        <div class="v">${total}</div>
+      </div>
+      ${card('Green (Reusable)', greens, 'var(--good)', 'GREEN', pct(greens)+'%')}
+      ${card('Orange (Review Required)', oranges, 'var(--warn)', 'ORANGE', pct(oranges)+'%')}
+      ${card('Red (Re-quote / Budgetary)', reds, 'var(--bad)', 'RED', pct(reds)+'%')}
+    </div>
+
+    <div class="filters">
+      ${statusFilter ? `<span class="pill" id="clearFilter">Active: ${statusFilter} (${view.length}) ✕</span>` : ''}
+      <select id="reasonSelect" style="max-width:240px">
+        <option value="">All Review Factors</option>
+        <option value="reusable_fresh" ${reasonFilter==='reusable_fresh'?'selected':''}>Fresh Quotes (Reusable)</option>
+        <option value="stale_pricing" ${reasonFilter==='stale_pricing'?'selected':''}>Stale Pricing (13-24 mo)</option>
+        <option value="speed_mismatch" ${reasonFilter==='speed_mismatch'?'selected':''}>Speed Tier Mismatch</option>
+        <option value="product_mismatch" ${reasonFilter==='product_mismatch'?'selected':''}>Product Mismatch (DIA/EVPL)</option>
+        <option value="addr_variation" ${reasonFilter==='addr_variation'?'selected':''}>Address Variations</option>
+        <option value="archived_pricing" ${reasonFilter==='archived_pricing'?'selected':''}>Archived (>24 mo Baseline)</option>
+        <option value="net_new_area" ${reasonFilter==='net_new_area'?'selected':''}>Net-New (Known Area LMPs)</option>
+        <option value="net_new_unserved" ${reasonFilter==='net_new_unserved'?'selected':''}>Net-New (No History)</option>
+      </select>
+      <input id="tSearch" placeholder="Filter by site, address, provider, or ZIP…" style="flex:1">
+      <button class="btn ghost" id="exportTriage">Export CSV</button>
+    </div>
+
+    <p class="muted">Showing <b>${view.length}</b> of ${total} sites. <span style="color:var(--accent)">Click any row to inspect historical comparison and geographic LMP baseline.</span></p>
+
+    <div class="tbl-wrap"><table>
+      <thead><tr>
+        ${['Site ID','Address','ZIP','Product','Speed','Status','Review Factor','Identified LMP','Recommended / Budgetary Rate','Age (Mo)','Why','Action']
+          .map(k => `<th data-tk="${k}">${k}</th>`).join('')}
+      </tr></thead>
+      <tbody>${view.map((r, idx) => `
+        <tr class="clickable-row" data-idx="${triage.indexOf(r)}">
+          <td><b>${esc(r['Site ID'])}</b></td>
+          <td>${esc(r['Address'])}</td>
+          <td>${esc(r['ZIP'])}</td>
+          <td>${esc(r['Product'])}</td>
+          <td>${esc(r['Speed'])}M</td>
+          <td><span class="tag ${r.Status==='GREEN'?'down':r.Status==='ORANGE'?'flat':'up'}">${r.Status}</span></td>
+          <td><span class="chip ${r.Status==='GREEN'?'chip-green':r.Status==='ORANGE'?'chip-orange':'chip-red'}">${esc(r.Chip)}</span></td>
+          <td><b>${esc(r['Identified LMP'])}</b></td>
+          <td><b>${esc(r['Recommended Rate'])}</b></td>
+          <td>${esc(r['Age (Mo)'])}</td>
+          <td style="white-space:normal;max-width:320px;font-size:12px;color:var(--muted)">${esc(r['Why'])}</td>
+          <td><button class="btn sm ghost inspect-btn" data-idx="${triage.indexOf(r)}">Inspect</button></td>
+        </tr>`).join('')}
+      </tbody></table></div>`;
+
+  // Clickable summary box filters
+  host.querySelectorAll('.kpi[data-status]').forEach(el => {
+    el.onclick = () => {
+      const s = el.dataset.status;
+      statusFilter = (statusFilter === s || s === '') ? null : s;
+      renderTriage();
+    };
+  });
+
+  const clear = $('clearFilter');
+  if (clear) clear.onclick = () => { statusFilter = null; reasonFilter = ''; renderTriage(); };
+
+  $('reasonSelect').onchange = e => {
+    reasonFilter = e.target.value;
+    renderTriage();
+  };
+
+  host.querySelectorAll('th[data-tk]').forEach(th => th.onclick = () => {
+    const k = th.dataset.tk;
+    triageSort = { key: k, dir: triageSort.key === k ? -triageSort.dir : 1 };
+    renderTriage();
+  });
+
+  const search = $('tSearch');
+  if (search) search.oninput = () => {
+    const q = search.value.toLowerCase();
+    host.querySelectorAll('tbody tr').forEach(tr => {
+      tr.classList.toggle('hidden', q && !tr.textContent.toLowerCase().includes(q));
+    });
+  };
+
+  // Inspect Modal handlers
+  host.querySelectorAll('.clickable-row').forEach(tr => {
+    tr.onclick = e => {
+      if (e.target.tagName === 'BUTTON') return;
+      openInspectModal(+tr.dataset.idx);
+    };
+  });
+  host.querySelectorAll('.inspect-btn').forEach(b => {
+    b.onclick = e => {
+      e.stopPropagation();
+      openInspectModal(+b.dataset.idx);
+    };
+  });
+
+  $('exportTriage').onclick = () => {
+    const cols = ['Site ID','Address','ZIP','Product','Speed','Status','Review Factor','Identified LMP','Recommended Rate','Age (Mo)','Why'];
+    const csv = [cols.join(','), ...view.map(r => cols.map(c => `"${String(r[c] || r.Chip).replace(/"/g,'""')}"`).join(','))].join('\n');
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([csv], {type:'text/csv'}));
+    a.download = 'isp_rate_analysis.csv';
+    a.click();
+  };
+}
+
+// Comparison & Geographic Review Modal
+function openInspectModal(idx){
+  const r = triage[idx];
+  if (!r) return;
+  const m = r.MatchObj;
+  const modal = $('compareModal');
+  $('mTitle').innerHTML = `Location Review: <b>${esc(r['Site ID'])}</b> — ${esc(r.Address)}`;
+
+  $('mBody').innerHTML = `
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+      <span class="tag ${r.Status==='GREEN'?'down':r.Status==='ORANGE'?'flat':'up'}" style="font-size:13px">${r.Status}</span>
+      <span class="chip ${r.Status==='GREEN'?'chip-green':r.Status==='ORANGE'?'chip-orange':'chip-red'}">${esc(r.Chip)}</span>
+      <span class="muted">ZIP ${esc(r.ZIP)}</span>
+    </div>
+
+    <div class="compare-grid">
+      <div class="compare-card">
+        <h4>📋 Current RFP Request</h4>
+        <div class="compare-row"><span class="compare-label">Site ID:</span><span>${esc(r['Site ID'])}</span></div>
+        <div class="compare-row"><span class="compare-label">Address:</span><span>${esc(r.Address)}</span></div>
+        <div class="compare-row"><span class="compare-label">ZIP Code:</span><span>${esc(r.ZIP)}</span></div>
+        <div class="compare-row"><span class="compare-label">Requested Product:</span><span><b>${esc(r.Product)}</b> (${r.Family})</span></div>
+        <div class="compare-row"><span class="compare-label">Bandwidth:</span><span><b>${esc(r.Speed)} Mbps</b></span></div>
+      </div>
+
+      <div class="compare-card">
+        <h4>🏛️ Matched Historical Quote</h4>
+        ${m ? `
+          <div class="compare-row"><span class="compare-label">Carrier / LMP:</span><span><b>${esc(m.provider)}</b></span></div>
+          <div class="compare-row"><span class="compare-label">Historical Address:</span><span>${esc(m.address)}</span></div>
+          <div class="compare-row"><span class="compare-label">Historical Product:</span><span>${esc(m.plan)} (${m.family})</span></div>
+          <div class="compare-row"><span class="compare-label">Historical Speed:</span><span>${esc(m.speed_mbps)} Mbps</span></div>
+          <div class="compare-row"><span class="compare-label">Quoted Monthly Rate:</span><span><b>${money(m.price)}</b> (${money(m.ppm)}/Mbps)</span></div>
+          <div class="compare-row"><span class="compare-label">Quote Date:</span><span>${esc(m.date)} (${r['Age (Mo)']} months ago)</span></div>
+          <div class="compare-row"><span class="compare-label">Address Similarity:</span><span>${(r.Sim*100).toFixed(0)}%</span></div>
+        ` : `
+          <p class="muted" style="margin-top:20px">No direct historical address match found in repository.</p>
+        `}
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:0">
+      <h4>📍 Geographic Area &amp; LMP Intelligence (ZIP ${esc(r.ZIP)})</h4>
+      <div style="font-size:13px;line-height:1.6">
+        <p><b>Active Local Providers (LMPs):</b> ${r['Area LMPs'].length ? r['Area LMPs'].join(', ') : 'None previously quoted in this ZIP'}</p>
+        <p><b>Pricing Recommendation:</b> <b>${esc(r['Recommended Rate'])}</b></p>
+        <p class="muted"><b>Triage Determination:</b> ${esc(r.Why)}</p>
+      </div>
+    </div>
+  `;
+
+  modal.classList.remove('hidden');
+}
+
+$('mClose').onclick = () => $('compareModal').classList.add('hidden');
+$('compareModal').onclick = e => {
+  if (e.target === $('compareModal')) $('compareModal').classList.add('hidden');
+};
+
+// Organized Data View
+function refresh(){
+  const fill = (sel, vals, first) => { const cur = sel.value; sel.innerHTML = first + vals.map(v => `<option>${esc(v)}</option>`).join(''); sel.value = cur; };
+  const provs = [...new Set(rows.map(r => r.provider))].sort();
+  fill($('fProvider'), provs, '<option value="">All providers</option>');
+  fill($('fRegion'), [...new Set(rows.map(r => r.region))].sort(), '<option value="">All regions</option>');
+  fill($('rProvider'), provs, '');
+  renderTable();
+}
+
+function filtered(){
+  const p = $('fProvider').value, g = $('fRegion').value, s = $('fSearch').value.toLowerCase();
+  return rows.filter(r => (!p || r.provider === p) && (!g || r.region === g) && (!s || String(r.plan).toLowerCase().includes(s)));
+}
+
+function renderTable(){
+  const d = filtered().sort((a,b) => (a[sortKey] > b[sortKey] ? 1 : -1) * sortDir);
+  $('tbody').innerHTML = d.slice(0,500).map(r =>
+    `<tr><td>${esc(r.date)}</td><td>${esc(r.provider)}</td><td>${esc(r.plan)}</td><td>${esc(r.speed_mbps)}</td><td>${money(r.price)}</td><td>${r.ppm ? money(r.ppm) : '—'}</td><td>${esc(r.region)}</td></tr>`
+  ).join('');
+  const avg = d.reduce((s,r) => s + r.price, 0) / (d.length || 1);
+  const dates = d.map(r => r.date).filter(Boolean).sort();
+  $('kpis').innerHTML = [
+    ['Historical Quotes', d.length], ['Active LMPs', new Set(d.map(r => r.provider)).size],
+    ['Avg Monthly Price', money(avg)],
+    ['Repository Date Range', dates.length ? `${dates[0]} → ${dates.at(-1)}` : '—']
+  ].map(([l,v]) => `<div class="kpi"><div class="l">${l}</div><div class="v" style="${String(v).length > 12 ? 'font-size:15px' : ''}">${v}</div></div>`).join('');
+}
+
+['fProvider','fRegion','fSearch'].forEach(id => $(id).oninput = renderTable);
+document.querySelectorAll('th[data-k]').forEach(th => th.onclick = () => {
+  sortDir = sortKey === th.dataset.k ? -sortDir : 1; sortKey = th.dataset.k; renderTable();
+});
+$('exportBtn').onclick = () => {
+  const cols = ['date','provider','plan','speed_mbps','price','region'];
+  const csv = [cols.join(','), ...filtered().map(r => cols.map(c => r[c]).join(','))].join('\n');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([csv], {type:'text/csv'}));
+  a.download = 'organized_isp_data.csv';
+  a.click();
+};
+
+// Recommendations Tab
+function analyze(provider){
+  const look = +$('sLook')?.value || 12, pct = (+$('sPct')?.value || 40) / 100;
+  let d = rows.filter(r => r.provider === provider).sort((a,b) => a.date > b.date ? 1 : -1);
+  if (!d.length) return null;
+  const cutoff = new Date(d.at(-1).date); cutoff.setMonth(cutoff.getMonth() - look);
+  const w = d.filter(r => new Date(r.date) >= cutoff), prices = w.map(r => r.price).sort((a,b) => a-b);
+  const pctVal = prices[Math.floor(pct * (prices.length - 1))];
+  const xs = w.map((_,i) => i), n = xs.length;
+  const mx = xs.reduce((a,b) => a+b, 0) / n, my = w.reduce((s,r) => s + r.price, 0) / n;
+  const slope = n > 1 ? xs.reduce((s,x,i) => s + (x-mx)*(w[i].price-my), 0) / xs.reduce((s,x) => s + (x-mx)**2, 0) : 0;
+  const rec = ($('sTrend')?.checked ?? true) ? pctVal + slope * 3 : pctVal;
+  const sd = Math.sqrt(prices.reduce((s,p) => s + (p-my)**2, 0) / n);
+  const conf = n >= 12 && sd/my < .08 ? 'High' : n >= 6 ? 'Medium' : 'Low';
+  return { d, avg:my, low:prices[0], high:prices.at(-1), slope, trend12:slope*12, rec, conf, n };
+}
+
+function renderRates(){
+  const provs = [...new Set(rows.map(r => r.provider))].sort();
+  if (!provs.length){
+    $('recBox').innerHTML = '<p class="muted">Import data first.</p>';
+    $('recTable').innerHTML = '';
+    return;
+  }
+  $('recTable').innerHTML = provs.map(p => {
+    const a = analyze(p);
+    const cls = a.trend12 > 1 ? 'up' : a.trend12 < -1 ? 'down' : 'flat';
+    return `<tr><td>${esc(p)}</td><td>${money(a.avg)}</td><td><span class="tag ${cls}">${a.trend12 >= 0 ? '+' : ''}${money(a.trend12)}</span></td><td>${money(a.low)}</td><td>${money(a.high)}</td><td><b>${money(a.rec)}</b></td><td>${a.conf}</td></tr>`;
+  }).join('');
+  const a = analyze($('rProvider').value || provs[0]);
+  $('recBox').innerHTML = `
+    <div class="rec"><div class="muted">Recommended monthly rate</div><b>${money(a.rec)}</b></div>
+    <p>Historical range: ${money(a.low)} – ${money(a.high)}</p>
+    <p>Trend: ${a.slope >= 0 ? 'rising' : 'falling'} ~${money(Math.abs(a.slope))}/period</p>
+    <p>Confidence: <b>${a.conf}</b> <span class="muted">(${a.n} data points)</span></p>`;
+  drawChart(a);
+}
+
+$('rProvider').onchange = renderRates;
+['sFresh','sArch','sSens'].forEach(id => $(id).onchange = () => {
+  if (triage.length) runTriage();
+});
+
+function drawChart(a){
+  const c = $('chart'), x = c.getContext('2d'), W = c.width, H = c.height, P = 36;
+  x.clearRect(0,0,W,H);
+  const ps = a.d.map(r => r.price), mn = Math.min(...ps, a.rec)*.95, mx = Math.max(...ps, a.rec)*1.05;
+  const X = i => P + i*(W-2*P)/Math.max(ps.length-1,1), Y = v => H-P-(v-mn)/(mx-mn)*(H-2*P);
+  x.strokeStyle = '#26304a'; x.fillStyle = '#8b96b0'; x.font = '11px sans-serif';
+  for (let i=0;i<=4;i++){ const v = mn+(mx-mn)*i/4; x.beginPath(); x.moveTo(P,Y(v)); x.lineTo(W-P,Y(v)); x.stroke(); x.fillText('$'+v.toFixed(0),2,Y(v)+4); }
+  x.strokeStyle = '#4f8cff'; x.lineWidth = 2; x.beginPath(); ps.forEach((p,i) => i ? x.lineTo(X(i),Y(p)) : x.moveTo(X(i),Y(p))); x.stroke();
+  x.setLineDash([6,4]); x.strokeStyle = '#2ecc8f'; x.beginPath(); x.moveTo(P,Y(a.rec)); x.lineTo(W-P,Y(a.rec)); x.stroke(); x.setLineDash([]);
+  x.fillStyle = '#2ecc8f'; x.fillText('Recommended '+money(a.rec), W-P-120, Y(a.rec)-6);
+  x.fillStyle = '#8b96b0'; x.fillText(a.d[0].date, P, H-10); x.fillText(a.d.at(-1).date, W-P-60, H-10);
+}
+</script>
+</body>
+</html>
